@@ -1,0 +1,12 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "flexarray.h"
+
+struct flexarrayrec {
+    int capacity;
+    int itemcount;
+    int *items;
+}
+
+    flexarray flexarray_new(){
+        flexarray result = 

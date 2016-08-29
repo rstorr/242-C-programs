@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "mylib.h"
+#include "queue.h"
+
+struct queue {
+    double *items;
+    int head;
+    int capacity;
+    int num_items;
+}

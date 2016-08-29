@@ -1,0 +1,31 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+int main(void){
+    int winner;
+    int winScore = 0;
+    
+    while (1 == scanf("%d%lg%lg%lg", &n, &a, &b, &c)){
+           int s1 = a;
+           int s2 = b;
+           int s3 = c;
+           int score;
+
+           if (s1 < s2 && s1 < s3){
+               score = (s2 + s3) / 2;
+           } else if ( s2 < s1 && s2 < s3){
+               score = (s1 + s3) / 2;
+           } else {
+               score = (s1 +s2) / 2;
+           }
+
+           if (score > winScore){
+               winScore = score;
+               winner = n;
+           }
+    }
+
+    printf("winner: %d", winner);
+}
+
+    

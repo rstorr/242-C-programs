@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "mylib.h"
+#include "graph.h"
+#include "queue.h"
+
+struct graphrec {
+    int size;
+    struct vertexrec *vertices;
+    int **edges;
+};
+
+struct vertexrec{
+	int predecessor;
+	int distance;
+	state_t state;
+	int finish;
+};
+
+static int step;
+
+graph graph_new(int size){
+	int i;
+	graph g = emalloc(sizeof(*g));
+	g->size = size;
+	g->vertices = emalloc(sizeof(struct vertexrec) * size);
+	g->edges = emalloc(size * sizeof(g->edges[0]));
+	for(i=0; i < size; i++){
+            g->edges[i] = calloc(size, sizeof(g->edges[0][0]));
+	}
+	return g;
+}
+
+void graph_free(graph g){
+	int i;
+	for(i=0; i < g->size; i++){
+		free(g->edges[i]);
+	}
+	free(g->edges);
+	free(g->vertices);
+	free(g);
+}
+
+void graph_print(graph g){
+	int i,j;
+  printf("adjacency list:\n");
+	for(i=0; i < g->size; i++){
+		printf("%d | ", i);
+		for(j=0;j < g->size; j++){
+			if (g->edges[i][j] == 1){
+				printf("%d, ", j);
+			}
+		}
+		printf("\n");
+	}
+  printf("\nvertex distance pred finish\n");
+  for(i = 0;i < g->size; i++){
+    printf("%d\t%d\t%d\t%d\n",i,g->vertices[i].distance,
+        g->vertices[i].predecessor, g->vertices[i].finish);
+  }
+
+}
+
+void graph_add_edge(graph g, int u, int v){
+  g->edges[u][v] = 1;
+  g->edges[v][u] = 1;
+}
+
+void graph_dfs(graph g){
+  int i;
+
+  for (i = 0; i < g->size; i++){
+    g->vertices[i].state = UNVISITED;
+    g->vertices[i].predecessor = -1;
+  }
+  step = 0;
+
+  for (i = 0; i < g->size; i++){
+      if (g->vertices[i].state == UNVISITED){
+          visit(g, i);
+      }
+  }
+}
+
+void visit(graph g, int v){
+  int i;
+  g->vertices[v].state = VISITED_SELF;
+  step++;
+  g->vertices[v].distance = step;
+
+  for(i = 0; i < g->size; i++){
+    if (g->edges[v][i] == 1 && g->vertices[i].state == UNVISITED){
+      g->vertices[i].predecessor = v;
+      visit(g, i);
+    }
+  }
+  step++;
+  g->vertices[v].state = VISITED_DESCENDANTS;
+  g->vertices[v].finish = step;
+}
